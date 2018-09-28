@@ -3,6 +3,7 @@
 
 ###   Project Infomation
 -   This project develop under Python 3.6.6. Let's have a look of the directory tree:
+<pre>
 DisasterResponse/                   --> project directory
 ├── data                            --> dataset directory(only for notebook)
 │   ├── categories.csv
@@ -26,6 +27,8 @@ DisasterResponse/                   --> project directory
 │   │   └── train_classifier.py     --> train_classifier for ML pipeline
 │   └── README.md                   --> pipeline README file
 └── README.md                       --> main README file
+
+</pre>
 
 -   The requirement pkgs:
 nltk                    3.3
