@@ -1,6 +1,12 @@
 #   DisasterResponse Project
 -   This is a project analyzing message data for disaster response.
 
+##   Above All
+-   Before you start read this page, please check your system env first.
+-   This project developed in Ubuntu 18.04 LTS 64 bit with Python 3.6.6 (ATTENTION: NOT Anaconda Env.!).
+-   After develop this project, I also test the pipeline scripts in Windows 10 64bit with Python 3.7 64bit (ATTENTION: NOT Anaconda Env.!).
+-   Please don't use the Anaconda Env, and I suggest you to use Ubuntu or any other Linux to run it.
+
 ###   Project Infomation
 -   This project develop under Python 3.6.6. Let's have a look of the directory tree:
 <pre>
@@ -27,10 +33,10 @@ DisasterResponse/                   --> project directory
 │   │   └── train_classifier.py     --> train_classifier for ML pipeline
 │   └── README.md                   --> pipeline README file
 └── README.md                       --> main README file
-
 </pre>
 
 -   The requirement pkgs:
+<pre>
 nltk                    3.3
 pickleshare             0.7.4
 pandas                  0.23.2
@@ -38,6 +44,7 @@ numpy                   1.14.5
 SQLAlchemy              1.2.12
 sklearn                 0.0
 scipy                   1.1.0
+</pre>
 
 ###   Run this Project
 1.   cd to the pipeline directory

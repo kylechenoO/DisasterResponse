@@ -11806,6 +11806,7 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">f1_score</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">GridSearchCV</span>
 <span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="k">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">classification_report</span>
 <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn.multioutput</span> <span class="k">import</span> <span class="n">MultiOutputClassifier</span>
@@ -11877,6 +11878,7 @@ div#notebook {
         <span class="s1">&#39;other_weather&#39;</span><span class="p">,</span> <span class="s1">&#39;direct_report&#39;</span><span class="p">]</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 <span class="n">Y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">Y_labels</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">category_names</span> <span class="o">=</span> <span class="n">Y_labels</span>
 </pre></div>
 
 </div>
@@ -12082,11 +12084,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## get the f1 score of X_test</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">f1_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-    <span class="n">f1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;macro&#39;</span><span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f1_list</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_names</span> <span class="o">=</span> <span class="n">category_names</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12102,11 +12100,14 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1137: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no true samples.
-  &#39;recall&#39;, &#39;true&#39;, average, warn_for)
-/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1135: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no predicted samples.
-  &#39;precision&#39;, &#39;predicted&#39;, average, warn_for)
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>                        precision    recall  f1-score   support
+
+               related       0.86      0.88      0.87      6555
+               request       0.30      0.27      0.28      1308
+
+           avg / total       0.76      0.77      0.77      7863
+
 </pre>
 </div>
 </div>
@@ -12116,8 +12117,9 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>0.6291953347565222
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1428: UserWarning: labels size, 2, does not match size of target_names, 36
+  .format(len(labels), len(target_names))
 </pre>
 </div>
 </div>
@@ -12193,7 +12195,7 @@ div#notebook {
            lowercase=True, max_df=1.0, max_features=None, min_df=1,
            ngram_range=(1, 1), preprocessor=None, stop_words=None,
            strip_accents=None, token_pattern=&#39;(?u)\\b\\w\\w+\\b&#39;,
-           tokenizer=&lt;function tokenize at 0x7f02b80fd840&gt;, vocabulary=None)),
+           tokenizer=&lt;function tokenize at 0x7f950d747a60&gt;, vocabulary=None)),
   (&#39;tfidf&#39;,
    TfidfTransformer(norm=&#39;l2&#39;, smooth_idf=True, sublinear_tf=False, use_idf=True)),
   (&#39;clf&#39;,
@@ -12214,7 +12216,7 @@ div#notebook {
          lowercase=True, max_df=1.0, max_features=None, min_df=1,
          ngram_range=(1, 1), preprocessor=None, stop_words=None,
          strip_accents=None, token_pattern=&#39;(?u)\\b\\w\\w+\\b&#39;,
-         tokenizer=&lt;function tokenize at 0x7f02b80fd840&gt;, vocabulary=None),
+         tokenizer=&lt;function tokenize at 0x7f950d747a60&gt;, vocabulary=None),
  &#39;vect__analyzer&#39;: &#39;word&#39;,
  &#39;vect__binary&#39;: False,
  &#39;vect__decode_error&#39;: &#39;strict&#39;,
@@ -12302,7 +12304,7 @@ div#notebook {
             splitter=&#39;best&#39;),
            n_jobs=-1))]),
        fit_params=None, iid=True, n_jobs=1,
-       param_grid={&#39;vect__lowercase&#39;: [False], &#39;vect__min_df&#39;: [1], &#39;tfidf__smooth_idf&#39;: [False]},
+       param_grid={&#39;vect__min_df&#39;: [1], &#39;vect__lowercase&#39;: [False], &#39;tfidf__smooth_idf&#39;: [False]},
        pre_dispatch=&#39;2*n_jobs&#39;, refit=True, return_train_score=&#39;warn&#39;,
        scoring=None, verbose=0)</pre>
 </div>
@@ -12353,11 +12355,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## get the f1 score of X_test</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">f1_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-    <span class="n">f1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;macro&#39;</span><span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f1_list</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_names</span><span class="o">=</span><span class="n">category_names</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12373,11 +12371,14 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1137: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no true samples.
-  &#39;recall&#39;, &#39;true&#39;, average, warn_for)
-/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1135: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no predicted samples.
-  &#39;precision&#39;, &#39;predicted&#39;, average, warn_for)
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>                        precision    recall  f1-score   support
+
+               related       0.86      0.87      0.87      6555
+               request       0.31      0.28      0.29      1308
+
+           avg / total       0.77      0.78      0.77      7863
+
 </pre>
 </div>
 </div>
@@ -12387,8 +12388,9 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>0.6285299030635385
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1428: UserWarning: labels size, 2, does not match size of target_names, 36
+  .format(len(labels), len(target_names))
 </pre>
 </div>
 </div>
@@ -12426,7 +12428,8 @@ div#notebook {
     <span class="s1">&#39;tfidf__smooth_idf&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">cv</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">## cv = GridSearchCV(pipeline, param_grid = parameters, cv = 2)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 </pre></div>
 
@@ -12437,6 +12440,24 @@ div#notebook {
 <div class="output_wrapper">
 <div class="output">
 
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py:547: UserWarning: Multiprocessing-backed parallel loops cannot be nested, setting n_jobs=1
+  **self._backend_args)
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py:547: UserWarning: Multiprocessing-backed parallel loops cannot be nested, setting n_jobs=1
+  **self._backend_args)
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py:547: UserWarning: Multiprocessing-backed parallel loops cannot be nested, setting n_jobs=1
+  **self._backend_args)
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py:547: UserWarning: Multiprocessing-backed parallel loops cannot be nested, setting n_jobs=1
+  **self._backend_args)
+</pre>
+</div>
+</div>
 
 <div class="output_area">
 
@@ -12455,8 +12476,8 @@ div#notebook {
         strip...
             oob_score=False, random_state=42, verbose=0, warm_start=False),
            n_jobs=-1))]),
-       fit_params=None, iid=True, n_jobs=1,
-       param_grid={&#39;vect__lowercase&#39;: [False], &#39;vect__min_df&#39;: [1], &#39;tfidf__smooth_idf&#39;: [False]},
+       fit_params=None, iid=True, n_jobs=-1,
+       param_grid={&#39;vect__min_df&#39;: [1], &#39;vect__lowercase&#39;: [False], &#39;tfidf__smooth_idf&#39;: [False]},
        pre_dispatch=&#39;2*n_jobs&#39;, refit=True, return_train_score=&#39;warn&#39;,
        scoring=None, verbose=0)</pre>
 </div>
@@ -12474,11 +12495,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## get the f1 score of X_test</span>
 <span class="n">y_pred</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">f1_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
-    <span class="n">f1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;macro&#39;</span><span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f1_list</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">target_names</span><span class="o">=</span><span class="n">category_names</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12494,11 +12511,14 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1137: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no true samples.
-  &#39;recall&#39;, &#39;true&#39;, average, warn_for)
-/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1135: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 in labels with no predicted samples.
-  &#39;precision&#39;, &#39;predicted&#39;, average, warn_for)
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>                        precision    recall  f1-score   support
+
+               related       0.84      0.97      0.90      6555
+               request       0.39      0.10      0.16      1308
+
+           avg / total       0.77      0.82      0.78      7863
+
 </pre>
 </div>
 </div>
@@ -12508,8 +12528,9 @@ div#notebook {
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>0.6764998239146205
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/usr/local/lib/python3.5/dist-packages/sklearn/metrics/classification.py:1428: UserWarning: labels size, 2, does not match size of target_names, 36
+  .format(len(labels), len(target_names))
 </pre>
 </div>
 </div>

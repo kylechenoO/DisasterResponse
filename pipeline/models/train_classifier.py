@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.metrics import classification_report
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -86,8 +87,16 @@ def build_model():
         ('clf', MultiOutputClassifier(RandomForestClassifier(random_state = 42), n_jobs = -1))
     ])
 
+    parameters = {
+        'vect__min_df': [1],
+        'vect__lowercase': [False],
+        'tfidf__smooth_idf': [False],
+    }
+
+    cv = GridSearchCV(pipeline, parameters, cv = 2, n_jobs = -1)
+
     ## return val
-    return(pipeline)
+    return(cv)
 
 def evaluate_model(model, X_test, Y_test, category_names):
     '''
@@ -98,11 +107,12 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     ## get the f1 score of X_test
     y_pred = model.predict(X_test)
-    f1_list = []
-    for t, p in zip(Y_test, y_pred):
-        f1_list.append(f1_score(t, p, average = 'macro'))
+    print(classification_report(Y_test[:,1], y_pred[:,1], target_names=category_names))
+    #f1_list = []
+    #for t, p in zip(Y_test, y_pred):
+        #f1_list.append(f1_score(t, p, average = 'macro'))
 
-    print(np.array(f1_list).mean())
+    #print(np.array(f1_list).mean())
 
 def save_model(model, model_filepath):
     '''
