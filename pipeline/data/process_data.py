@@ -43,7 +43,7 @@ def load_data(messages_filepath, categories_filepath):
     df.drop(['categories'], axis = 1, inplace = True)
 
     ## concatenate the original dataframe with the new `categories` dataframe
-    df = pd.merge(df, categories, left_on = df.index, right_on = categories.index)
+    df = pd.merge(df, categories, left_on = df.index.values, right_on = categories.index.values)
     df.drop(['key_0'], axis = 1, inplace = True)
 
     ## return df
