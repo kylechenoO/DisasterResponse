@@ -19,6 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
 
 nltk.download('punkt')
 nltk.download('wordnet')
@@ -108,6 +109,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
     ## get the f1 score of X_test
     y_pred = model.predict(X_test)
     print(classification_report(Y_test[:,1], y_pred[:,1], target_names=category_names))
+    print(accuracy_score(Y_test[:,1], y_pred[:,1]))
     #f1_list = []
     #for t, p in zip(Y_test, y_pred):
         #f1_list.append(f1_score(t, p, average = 'macro'))
